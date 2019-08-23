@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'optparse'
+require 'apple_peeler'
+
+options = {}
+OptionParser.new do |parser|
+  parser.on('-fFILENAME', '--filename=FILENAME') do |filename|
+    options[:filename] = filename
+  end
+end.parse!(ARGV)
+
+documentation = ApplePeeler::Documentation.new(
+  on_documentation: proc { |d| puts d.to_terminal_table }
+)
+
+documentation.load!
+
+binding.pry
+
+# specification = ApplePeeler::Specification.new(
+# specifications: documentation.specifications
+# )
+#
+# File.write(options[:filename], specification.to_json)
