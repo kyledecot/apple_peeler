@@ -5,6 +5,8 @@ require 'apple_peeler/documentation/type'
 require 'apple_peeler/documentation/web_service_endpoint'
 require 'apple_peeler/documentation/crawler'
 
+require 'vcr'
+
 class ApplePeeler
   class Documentation
     attr_reader :documentation_by_type
@@ -28,10 +30,13 @@ class ApplePeeler
         documentation = to_documentation(document)
 
         unless documentation.nil?
+
           @documentation_by_type[documentation.type] << documentation
           @on_documentation&.call(documentation)
         end
       end
+
+      true
     end
 
     private
