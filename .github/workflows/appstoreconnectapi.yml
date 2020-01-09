@@ -12,4 +12,4 @@ jobs:
       - name: Build
         run: docker build . -t apple_peeler:latest
       - name: Peel
-        run: docker run -it apple_peeler bundle exec ./exe/apple_peeler
+        run: docker run apple_peeler bundle exec ./exe/apple_peeler
