@@ -1,6 +1,10 @@
 FROM ruby:alpine
 
-WORKDIR apple_peeler
+ENV WORKDIR=/apple_peeler
+
+WORKDIR $WORKDIR
+
+VOLUME $WORKDIR
 
 COPY ./ ./
 
