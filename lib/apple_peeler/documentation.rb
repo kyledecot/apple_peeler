@@ -5,8 +5,6 @@ require 'apple_peeler/documentation/type'
 require 'apple_peeler/documentation/web_service_endpoint'
 require 'apple_peeler/documentation/crawler'
 
-require 'vcr'
-
 class ApplePeeler
   class Documentation
     attr_reader :documentation_by_type

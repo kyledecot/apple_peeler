@@ -6,7 +6,6 @@ require 'factory_bot'
 require 'simplecov'
 require 'timecop'
 require 'pry'
-require 'vcr'
 
 SimpleCov.start do
   add_filter('/spec/')
