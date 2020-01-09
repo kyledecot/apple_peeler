@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'apple_peeler'
+require 'apple_peeler/cli'
+require 'vcr'
+require 'net/http'
 
-puts "TODO"
+VCR.configure do |config|
+  config.hook_into :webmock
+  config.cassette_library_dir = "fixtures/vcr_cassettes"
+end 
 
+ApplePeeler::CLI.run(ARGV)
