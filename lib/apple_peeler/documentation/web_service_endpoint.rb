@@ -33,22 +33,22 @@ class ApplePeeler
       def name
         "web-service-endpoint-#{SecureRandom.hex}"
       end
-      
+
       def breadcrumbs
         @document.css('.localnav-menu-item.localnav-menu-breadcrumb-item')
-      end 
+      end
 
       def groups
         breadcrumbs.map(&:text)
-      end 
+      end
 
       def group
         groups[-2]
-      end 
+      end
 
-      def heading 
+      def heading
         @heading ||= @document.css('.topic-title .topic-heading')&.text.to_s
-      end 
+      end
 
       def type
         :web_service_endpoint

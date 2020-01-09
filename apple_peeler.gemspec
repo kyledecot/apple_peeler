@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Web Scraper for Apple Documentation'
   spec.homepage      = 'https://github.com/kyledecot/apple_peeler'
   spec.license       = 'MIT'
-  spec.bindir        = "exe"
+  spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
 
   spec.files         = Dir.chdir(File.expand_path(__dir__)) do
@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'colorize'
   spec.add_development_dependency 'factory_bot', '~> 5.0.2'
+  spec.add_development_dependency 'gli'
   spec.add_development_dependency 'guard-rspec', '~> 4.7.3'
   spec.add_development_dependency 'nokogiri'
   spec.add_development_dependency 'pry', '~> 0.12'
@@ -37,6 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'terminal-table'
   spec.add_development_dependency 'timecop', '~> 0.9.1'
   spec.add_development_dependency 'vcr'
-  spec.add_development_dependency 'gli'
   spec.add_development_dependency 'webmock', '~> 3.6.0'
 end
