@@ -3,24 +3,12 @@ name: App Store Connect API
 on:
   push:
 
-
 jobs:
   build:
     name: Rubocop
     runs-on: ubuntu-latest
-
     steps:
-			- name: "Generate"
-				inputs:
-					who-to-greet:  # id of input
-						description: 'Who to greet'
-						required: true
-						default: 'World'
-				outputs:
-					time: # id of output
-						description: 'The time we greeted you'
-				runs:
-					using: 'docker'
-					image: 'Dockerfile'
-					args:
-						- ${{ inputs.who-to-greet }}
+      - name: "Generate"
+        runs:
+          using: 'docker'
+          image: 'Dockerfile'
