@@ -27,7 +27,8 @@ class ApplePeeler
       end
 
       def type
-        @document.css('.topic-heading').text
+        # @document.css('.topic-heading').text
+        :type
       end
 
       def possible_values

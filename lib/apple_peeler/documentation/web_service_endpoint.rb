@@ -33,9 +33,25 @@ class ApplePeeler
       def name
         "web-service-endpoint-#{SecureRandom.hex}"
       end
+      
+      def breadcrumbs
+        @document.css('.localnav-menu-item.localnav-menu-breadcrumb-item')
+      end 
+
+      def groups
+        breadcrumbs.map(&:text)
+      end 
+
+      def group
+        groups[-2]
+      end 
+
+      def heading 
+        @heading ||= @document.css('.topic-title .topic-heading')&.text.to_s
+      end 
 
       def type
-        'foo'
+        :web_service_endpoint
       end
 
       def path
@@ -43,7 +59,7 @@ class ApplePeeler
       end
 
       def http_method
-        @document.at('.endpointurl-method').text
+        @document.at('.endpointurl-method').text.downcase.to_sym
       end
 
       def http_body

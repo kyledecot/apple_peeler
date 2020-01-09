@@ -7,6 +7,8 @@ require 'apple_peeler/documentation/crawler'
 
 class ApplePeeler
   class Documentation
+    attr_reader :documentation_by_type
+
     def self.types
       @types ||= []
     end

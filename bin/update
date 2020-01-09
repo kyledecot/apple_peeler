@@ -4,6 +4,21 @@
 require 'bundler/setup'
 require 'optparse'
 require 'apple_peeler'
+require 'app_store_connect'
+require 'tsort'
+
+class Todo
+  include TSort
+
+  def initialize
+    @dep = {}
+    @dep.default = []
+  end 
+
+  def tsort_each_child(node, &block)
+    @dep[node].each(&block)
+  end
+end 
 
 options = {}
 OptionParser.new do |parser|
@@ -13,15 +28,35 @@ OptionParser.new do |parser|
 end.parse!(ARGV)
 
 documentation = ApplePeeler::Documentation.new(
-  on_documentation: proc { |d| puts d.to_terminal_table }
+  on_documentation: proc { |d| print '.' }
 )
 
 documentation.load!
 
-binding.pry
+lines = []
+cache = Hash.new
+cache.default = []
+implemented_urls_by_http_method = AppStoreConnect::SCHEMA
+  .web_service_endpoints
+  .reduce(cache) { |acc, wse| 
+    acc[wse.http_method] << wse.url 
+    acc
+  }
 
-# specification = ApplePeeler::Specification.new(
-# specifications: documentation.specifications
-# )
-#
-# File.write(options[:filename], specification.to_json)
+documentation_by_groups = documentation.documentation_by_type[:web_service_endpoint].group_by(&:group)
+
+documentation_by_groups.each do |groups, docs|
+  lines << ""
+  lines << "### #{groups}"
+
+  docs.each do |d|
+    mark = if implemented_urls_by_http_method[d.http_method].detect { |u| u == d.url }
+             "X"
+           else 
+             " "
+           end 
+    lines << "- [#{mark}] #{d.heading}"
+  end
+end
+
+File.write(options[:filename], lines.join("\n"))

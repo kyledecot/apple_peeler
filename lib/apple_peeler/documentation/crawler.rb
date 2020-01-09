@@ -10,8 +10,9 @@ class ApplePeeler
     class Crawler
       def initialize(host)
         @host = host
-        @pool = Pool.new(size: 10)
+        @pool = Pool.new(size: 5)
         @semaphore = Mutex.new
+        @count = 0
       end
 
       def start(path, &block)
@@ -47,10 +48,12 @@ class ApplePeeler
       end
 
       def load(uri, &block)
+        # return if @count >= 100
         @pool.schedule do
           unless visited?(uri) || enqueued?(uri)
             document = Nokogiri::HTML(URI.open(uri))
-            uris << uri
+            @semaphore.synchronize { @count += 1; }
+            @semaphore.synchronize { uris << uri }
 
             yield document if block_given?
 
@@ -66,9 +69,7 @@ class ApplePeeler
       end
 
       def uris
-        @semaphore.synchronize do
-          @uris ||= Set.new
-        end
+        @uris ||= Set.new
       end
 
       def paths
