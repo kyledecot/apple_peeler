@@ -50,10 +50,8 @@ class ApplePeeler
       def load(uri, &block)
         @pool.schedule do
           unless visited?(uri) || enqueued?(uri)
-            document = nil
-            VCR.use_cassette(uri.to_s, record: :once, match_requests_on: %i[method uri]) do
-              document = Nokogiri::HTML(URI.open(uri))
-            end
+            document = Nokogiri::HTML(URI.open(uri))
+
             @semaphore.synchronize { @count += 1; }
             @semaphore.synchronize { uris << uri }
 
