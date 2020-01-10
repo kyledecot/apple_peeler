@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class ApplePeeler
   class Cache 
     class Persistence
@@ -5,6 +7,7 @@ class ApplePeeler
 
       def initialize
         @directory = File.expand_path("../../../tmp/cache", __dir__)
+        FileUtils.mkdir_p(@directory)
       end 
 
       def all
