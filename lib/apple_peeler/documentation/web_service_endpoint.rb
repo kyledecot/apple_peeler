@@ -59,12 +59,12 @@ class ApplePeeler
       end
 
       def response_codes
-						@document.search('#response-codes .parametertable-row').map do |element|
-					{
-					status_code: response_code_status_code(element),
-					status_phrase: response_code_status_reason_phrase(element),
-					type: response_code_status_type(element)
-					}
+        @document.search('#response-codes .parametertable-row').map do |element|
+          {
+            status_code: response_code_status_code(element),
+            status_phrase: response_code_status_reason_phrase(element),
+            type: response_code_status_type(element)
+          }
         end
       end
 
@@ -92,9 +92,6 @@ class ApplePeeler
 
       def response_code_status_reason_phrase(element)
         element.at('.parametertable-status .parametertable-status-reasonphrase').text.chomp
-			rescue Exception => e
-				require 'pry'
-				binding.pry
       end
 
       def response_code_status_code(element)

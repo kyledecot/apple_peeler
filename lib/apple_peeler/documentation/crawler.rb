@@ -47,41 +47,41 @@ class ApplePeeler
           .select { |href| href.match?(%r{/documentation\/appstoreconnectapi}) }
           .map { |href| URI.parse("#{@host}#{href}") }
       end
-      
+
       def schedule(&block)
         @pool.schedule(&block)
-      end 
+      end
 
       def synchronize(&block)
         @semaphore.synchronize(&block)
-      end 
+      end
 
       def load(uri, &block)
-        synchronize do 
+        synchronize do
           enqueued_uris.delete(uri)
           paths.add(uri.path)
-        end 
+        end
 
         document = nil
         html = @cache[uri.to_s]
 
-        unless html.nil?
-          document = Nokogiri::HTML(html)
-        else
+        if html.nil?
           html = URI.open(uri).read
           document = Nokogiri::HTML(html)
           @cache[uri.to_s] = html
-        end 
+        else
+          document = Nokogiri::HTML(html)
+        end
 
         yield document if block_given?
 
         relevant_uris(document).each do |relevant_uri|
           next if visited?(relevant_uri.path)
           next if enqueued?(relevant_uri)
-          
-          synchronize do 
-            enqueued_uris.add(relevant_uri) 
-          end 
+
+          synchronize do
+            enqueued_uris.add(relevant_uri)
+          end
 
           schedule { load(relevant_uri, &block) }
         end
