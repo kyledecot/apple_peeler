@@ -34,18 +34,6 @@ class ApplePeeler
         "web-service-endpoint-#{SecureRandom.hex}"
       end
 
-      def breadcrumbs
-        @document.css('.localnav-menu-item.localnav-menu-breadcrumb-item')
-      end
-
-      def groups
-        breadcrumbs.map(&:text)
-      end
-
-      def group
-        groups[-2]
-      end
-
       def heading
         @heading ||= @document.css('.topic-title .topic-heading')&.text.to_s
       end
@@ -71,13 +59,12 @@ class ApplePeeler
       end
 
       def response_codes
-        @document.search('#response-codes .parametertable-row').map do |_element|
-          {}
-          # {
-          # status_code: response_code_status_code(element),
-          # status_phrase: response_code_status_reason_phrase(element),
-          # type: response_code_status_type(element)
-          # }
+						@document.search('#response-codes .parametertable-row').map do |element|
+					{
+					status_code: response_code_status_code(element),
+					status_phrase: response_code_status_reason_phrase(element),
+					type: response_code_status_type(element)
+					}
         end
       end
 
@@ -100,15 +87,18 @@ class ApplePeeler
       private
 
       def response_code_status_type(element)
-        element.at('.parametertable-type').text
+        element.at('.parametertable-type')&.text&.chomp
       end
 
       def response_code_status_reason_phrase(element)
-        element.at('.parametertable-status .parametertable-status-reasonphrase').text
+        element.at('.parametertable-status .parametertable-status-reasonphrase').text.chomp
+			rescue Exception => e
+				require 'pry'
+				binding.pry
       end
 
       def response_code_status_code(element)
-        status = element.at('.parametertable-status').text
+        status = element.at('.parametertable-status').text.chomp
 
         status.gsub(" #{response_code_status_reason_phrase(element)}", '')
       end

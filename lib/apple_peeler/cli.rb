@@ -9,6 +9,8 @@ class ApplePeeler
         on_documentation: proc { |_d| print '.' }
       )
 
+      print "\n"
+
       documentation.load!
     end
   end

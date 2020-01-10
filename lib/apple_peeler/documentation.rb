@@ -28,10 +28,9 @@ class ApplePeeler
         documentation = to_documentation(document)
 
         unless documentation.nil?
-
           @documentation_by_type[documentation.type] << documentation
           @on_documentation&.call(documentation)
-        end
+        end 
       end
 
       true

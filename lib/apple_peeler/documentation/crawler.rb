@@ -4,21 +4,22 @@ require 'open-uri'
 require 'nokogiri'
 
 require 'apple_peeler/documentation/pool'
+require 'apple_peeler/cache'
 
 class ApplePeeler
   class Documentation
     class Crawler
       def initialize(host)
         @host = host
-        @pool = Pool.new(size: 5)
+        @pool = Pool.new(size: 10)
         @semaphore = Mutex.new
-        @count = 0
+        @cache = Cache.new
       end
 
       def start(path, &block)
         uri = URI.parse("#{@host}#{path}")
 
-        load(uri, &block)
+        schedule { load(uri, &block) }
 
         loop do
           sleep(5)
@@ -33,8 +34,8 @@ class ApplePeeler
         enqueued_uris.map(&:path).include?(uri.path)
       end
 
-      def visited?(uri)
-        paths.include?(uri.path)
+      def visited?(path)
+        paths.include?(path)
       end
 
       private
@@ -46,21 +47,43 @@ class ApplePeeler
           .select { |href| href.match?(%r{/documentation\/appstoreconnectapi}) }
           .map { |href| URI.parse("#{@host}#{href}") }
       end
+      
+      def schedule(&block)
+        @pool.schedule(&block)
+      end 
+
+      def synchronize(&block)
+        @semaphore.synchronize(&block)
+      end 
 
       def load(uri, &block)
-        @pool.schedule do
-          unless visited?(uri) || enqueued?(uri)
-            document = Nokogiri::HTML(URI.open(uri))
+        synchronize do 
+          enqueued_uris.delete(uri)
+          paths.add(uri.path)
+        end 
 
-            @semaphore.synchronize { @count += 1; }
-            @semaphore.synchronize { uris << uri }
+        document = nil
+        html = @cache[uri.to_s]
 
-            yield document if block_given?
+        unless html.nil?
+          document = Nokogiri::HTML(html)
+        else
+          html = URI.open(uri).read
+          document = Nokogiri::HTML(html)
+          @cache[uri.to_s] = html
+        end 
 
-            relevant_uris(document).each do |relevant_uri|
-              load(relevant_uri, &block)
-            end
-          end
+        yield document if block_given?
+
+        relevant_uris(document).each do |relevant_uri|
+          next if visited?(relevant_uri.path)
+          next if enqueued?(relevant_uri)
+          
+          synchronize do 
+            enqueued_uris.add(relevant_uri) 
+          end 
+
+          schedule { load(relevant_uri, &block) }
         end
       end
 
@@ -68,12 +91,8 @@ class ApplePeeler
         @enqueued_uris ||= Set.new
       end
 
-      def uris
-        @uris ||= Set.new
-      end
-
       def paths
-        uris.map(&:path).to_set
+        @paths ||= Set.new
       end
     end
   end
