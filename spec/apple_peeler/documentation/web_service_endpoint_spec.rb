@@ -3,11 +3,11 @@
 RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
   describe '#http_body_type' do
     context 'with a HTTP body' do
-      let(:documentation) do 
+      let(:documentation) do
         described_class.new(
           document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
         )
-      end 
+      end
 
       it 'should return a string' do
         expect(documentation.http_body_type).to eq('UserUpdateRequest')
@@ -19,7 +19,7 @@ RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
         described_class.new(
           document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/read_user_information')
         )
-      end 
+      end
 
       it 'should return nil' do
         expect(documentation.http_body_type).to be_nil
@@ -73,20 +73,20 @@ RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
     end
   end
 
-  describe "#http_method" do 
+  describe '#http_method' do
     let(:documentation) do
       described_class.new(
         document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
-    
-    it "should return a string" do 
-      expected_http_method = "PATCH"
+
+    it 'should return a string' do
+      expected_http_method = 'PATCH'
       actual_http_method = documentation.http_method
 
       expect(actual_http_method).to eq(expected_http_method)
-    end 
-  end 
+    end
+  end
 
   describe '#dependencies' do
     let(:documentation) do

@@ -9,9 +9,9 @@ class ApplePeeler
       documentation.load!
 
       case format
-      when "png" then puts documentation.to_graph.to_png
-      when "json" then puts documentation.to_json
-      else 
+      when 'png' then puts documentation.to_graph.to_png
+      when 'json' then puts documentation.to_json
+      else
         puts "invalid format #{format}"
       end
     end

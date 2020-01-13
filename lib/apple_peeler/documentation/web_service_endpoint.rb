@@ -93,7 +93,7 @@ class ApplePeeler
 
       def response_types
         response_codes.map { |rc| rc[:type] }.compact.uniq
-      end 
+      end
 
       def response_code_status_type(element)
         element.at('.parametertable-type')&.text&.chomp

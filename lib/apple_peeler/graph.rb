@@ -50,7 +50,7 @@ class ApplePeeler
           to_documentation = @documentation_by_identifier[to_identifier]
 
           if to_documentation.nil?
-            STDERR.puts "Unable to map #{from_identifier} -> #{to_identifier}"
+            warn "Unable to map #{from_identifier} -> #{to_identifier}"
             next
           end
 
@@ -59,10 +59,10 @@ class ApplePeeler
           g.add_edges(from_node, to_node)
         end
       end
-     
-      tempfile = Tempfile.new(%w(appstoreconnectapi .png))
+
+      tempfile = Tempfile.new(%w[appstoreconnectapi .png])
       g.output(png: tempfile.path)
-      
+
       tempfile.read
     end
   end
