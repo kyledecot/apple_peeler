@@ -1,6 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
 require 'apple_peeler/cli'
 
-ApplePeeler::CLI.run
+options = {}
+OptionParser.new do |parser|
+  parser.on('--filename FILENAME') do |filename|
+    options[:filename] = filename
+  end
+end.parse!
+
+ApplePeeler::CLI.run(options.fetch(:filename))

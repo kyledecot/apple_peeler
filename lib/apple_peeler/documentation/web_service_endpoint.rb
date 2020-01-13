@@ -4,18 +4,10 @@ require 'terminal-table'
 require 'colorize'
 require 'digest'
 
-require 'apple_peeler/identifiable'
-
 class ApplePeeler
   class Documentation
     class WebServiceEndpoint
-      extend Identifiable
-
       TYPE = :web_service_endpoint
-
-      identified_by do
-        [TYPE, http_method, path]
-      end
 
       def self.parsable?(document)
         title = document.css('.topic-title .eyebrow')&.text.to_s
