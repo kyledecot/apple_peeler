@@ -16,6 +16,14 @@ class ApplePeeler
         @cache = Cache.new
       end
 
+      def enqueued_uris
+        @enqueued_uris ||= Set.new
+      end
+
+      def visited_uris
+        @visited_uris ||= Set.new
+      end
+
       def start(path, &block)
         uri = URI.parse("#{@host}#{path}")
 
@@ -31,11 +39,19 @@ class ApplePeeler
       end
 
       def enqueued?(uri)
-        enqueued_uris.map(&:path).include?(uri.path)
+        synchronize do
+          enqueued_uris
+            .map(&:path)
+            .include?(uri.path)
+        end
       end
 
-      def visited?(path)
-        paths.include?(path)
+      def visited?(uri)
+        synchronize do
+          visited_uris
+            .map(&:path)
+            .include?(uri.path)
+        end
       end
 
       private
@@ -57,10 +73,8 @@ class ApplePeeler
       end
 
       def load(uri, &block)
-        synchronize do
-          enqueued_uris.delete(uri)
-          paths.add(uri.path)
-        end
+        enqueued_uris.delete(uri)
+        visited_uris.add(uri)
 
         document = nil
         html = @cache[uri.to_s]
@@ -76,23 +90,13 @@ class ApplePeeler
         yield document if block_given?
 
         relevant_uris(document).each do |relevant_uri|
-          next if visited?(relevant_uri.path)
+          next if visited?(relevant_uri)
           next if enqueued?(relevant_uri)
 
-          synchronize do
-            enqueued_uris.add(relevant_uri)
-          end
+          enqueued_uris.add(relevant_uri)
 
           schedule { load(relevant_uri, &block) }
         end
-      end
-
-      def enqueued_uris
-        @enqueued_uris ||= Set.new
-      end
-
-      def paths
-        @paths ||= Set.new
       end
     end
   end

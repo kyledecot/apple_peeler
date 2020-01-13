@@ -47,10 +47,11 @@ class ApplePeeler
         @document.at('.endpointurl-method').text
       end
 
-      def http_body_type
+      def http_body_type(primitive = true)
         element = @document.at('#http-body .parametertable-type')
 
         return if element.nil?
+        return if element.text.chomp == 'binary' && primitive == false
 
         element.text.chomp
       end
@@ -86,7 +87,7 @@ class ApplePeeler
       end
 
       def dependencies
-        @dependencies ||= [http_body_type] + response_types
+        @dependencies ||= [http_body_type(false)].compact + response_types
       end
 
       private
