@@ -39,7 +39,7 @@ class ApplePeeler
                     { label: documentation.type, color: 'yellow' }
                   else
                     raise 'Unknown Type!'
-        end
+                  end
 
         nodes_by_identifier[documentation.identifier] = g.add_nodes(documentation.identifier, { shape: 'box' }.merge(options)) # TODO
       end

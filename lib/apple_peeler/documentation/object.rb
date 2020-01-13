@@ -10,7 +10,7 @@ class ApplePeeler
     class Object
       TYPE = :object
 
-      PRIMITIVES = %w(integer urireference string email datetime boolean).freeze
+      PRIMITIVES = %w[integer urireference string email datetime boolean].freeze
 
       def self.parsable?(document)
         title = document.css('.topic-title .eyebrow')&.text.to_s
@@ -22,18 +22,18 @@ class ApplePeeler
         @document = document
       end
 
-      def identifier 
+      def identifier
         type
-      end 
+      end
 
-      def inspect 
+      def inspect
         "#<ApplePeeler::Documentation::Object identifier=\"#{identifier}\">"
       end
 
       def type
         @type ||= document
-          .at('.topic-heading')
-          .text
+                  .at('.topic-heading')
+                  .text
       end
 
       def self.type
@@ -57,31 +57,31 @@ class ApplePeeler
         end
       end
 
-      def property_names 
+      def property_names
         @property_names ||= document
-          .css('#properties .parametertable-name')
-          .map(&:text)
-      end 
+                            .css('#properties .parametertable-name')
+                            .map(&:text)
+      end
 
       def property_types(primitive = true)
-        @property_types ||= begin 
+        @property_types ||= begin
           non_polymorphic_types = document
-            .css('#properties .parametertable-type')
-            .map { |e| e.text.gsub(/[^a-zA-Z\.]/, '') }
-            .select { |t| t != "" && (primitive || !PRIMITIVES.include?(t)) }
-            .compact
-          
-          # TODO: I Don't think that primitives can show up here however 
-          # we should make sure that is indeed the case 
+                                  .css('#properties .parametertable-type')
+                                  .map { |e| e.text.gsub(/[^a-zA-Z\.]/, '') }
+                                  .select { |t| t != '' && (primitive || !PRIMITIVES.include?(t)) }
+                                  .compact
+
+          # TODO: I Don't think that primitives can show up here however
+          # we should make sure that is indeed the case
           polymorphic_types = document
-            .css('#properties .parametertable-metadata .possibletypes .symbolref')
-            .map(&:text)
+                              .css('#properties .parametertable-metadata .possibletypes .symbolref')
+                              .map(&:text)
 
           polymorphic_types + non_polymorphic_types
-        end 
+        end
 
         @property_types
-      end 
+      end
 
       def properties
         @properties ||= begin
@@ -93,13 +93,11 @@ class ApplePeeler
 
       def dependencies
         property_types(false)
-      end 
+      end
 
       private
 
-      def document 
-        @document
-      end 
+      attr_reader :document
     end
   end
 end

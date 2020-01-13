@@ -73,7 +73,10 @@ RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
     end
 
     it 'should return an array of strings' do
-      expect(web_service_endpoint.dependencies).to match_array(%w[ErrorResponse UserResponse])
+      expected_dependencies = %w[UserUpdateRequest ErrorResponse UserResponse]
+      actual_dependencies = web_service_endpoint.dependencies
+
+      expect(actual_dependencies).to match_array(expected_dependencies)
     end
   end
 
