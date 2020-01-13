@@ -44,7 +44,7 @@ class ApplePeeler
       end
 
       def identifier
-        Digest::MD5.new.<<([TYPE, http_method, path].join('')).hexdigest
+        "#{http_method} #{path}"
       end
 
       def inspect
@@ -106,7 +106,7 @@ class ApplePeeler
       end
 
       def dependencies
-        response_codes.map { |rc| rc[:type] }.compact.uniq
+        ([http_body_type] + response_codes.map { |rc| rc[:type] }).compact.uniq
       end
 
       private

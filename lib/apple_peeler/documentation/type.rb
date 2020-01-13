@@ -19,7 +19,7 @@ class ApplePeeler
       end
 
       def identifier
-        Digest::MD5.new.<<(@document.css('.topic-heading').text.to_s).hexdigest
+        type
       end
 
       def self.type

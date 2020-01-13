@@ -33,31 +33,28 @@ class ApplePeeler
       nodes_by_identifier = {}
       tsort.each.with_index do |documentation, _index|
         options = case documentation.class::TYPE
-                  when :object then { label: documentation.name, color: 'blue' }
+                  when :object then { label: documentation.type, color: 'blue' }
                   when :web_service_endpoint then { color: 'green', label: "#{documentation.http_method.upcase}\n#{documentation.path}" }
                   when :type
-                    { label: documentation.name, color: 'yellow' }
+                    { label: documentation.type, color: 'yellow' }
                   else
                     raise 'Unknown Type!'
         end
 
-        nodes_by_identifier[documentation.identifier] = g.add_nodes(documentation.identifier.gsub(/\W+/, '')[0..35], { shape: 'box' }.merge(options)) # TODO
+        nodes_by_identifier[documentation.identifier] = g.add_nodes(documentation.identifier, { shape: 'box' }.merge(options)) # TODO
       end
 
       nodes_by_identifier.each do |from_identifier, from_node|
-        @documentation_by_identifier[from_identifier].dependencies.each do |to_type, to_identifier|
-          puts "    #{to_identifier}"
-
+        @documentation_by_identifier[from_identifier].dependencies.each do |to_identifier|
           to_documentation = @documentation_by_identifier[to_identifier]
 
           if to_documentation.nil?
-            puts "Could not find for #{to_type} #{to_identifier}"
+            puts "Unable to map #{from_identifier} -> #{to_identifier}"
             next
           end
 
           to_node = nodes_by_identifier.fetch(to_documentation.identifier)
 
-          puts 'Add edge'
           g.add_edges(from_node, to_node, arrowhead: 'halfopen')
         end
       end
