@@ -20,6 +20,7 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
 
   config.include FactoryBot::Syntax::Methods
+  config.include ApplePeeler::Spec::Helpers
 
   config.before(:suite) do
     FactoryBot.find_definitions

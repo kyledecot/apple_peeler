@@ -2,11 +2,20 @@
 
 require 'terminal-table'
 require 'colorize'
+require 'digest'
+
+require 'apple_peeler/identifiable'
 
 class ApplePeeler
   class Documentation
     class WebServiceEndpoint
+      extend Identifiable
+
       TYPE = :web_service_endpoint
+
+      identified_by do
+        [TYPE, http_method, path]
+      end
 
       def self.parsable?(document)
         title = document.css('.topic-title .eyebrow')&.text.to_s
@@ -31,7 +40,15 @@ class ApplePeeler
       end
 
       def name
-        "web-service-endpoint-#{SecureRandom.hex}"
+        "#{http_method} #{path}"
+      end
+
+      def identifier
+        Digest::MD5.new.<<([TYPE, http_method, path].join('')).hexdigest
+      end
+
+      def inspect
+        "#<ApplePeeler::Documentation::WebServiceEndpoint identifier=\"#{identifier}\">"
       end
 
       def heading
@@ -50,8 +67,12 @@ class ApplePeeler
         @document.at('.endpointurl-method').text.downcase.to_sym
       end
 
-      def http_body
-        # @http_body ||= HTTPBody.new
+      def http_body_type
+        element = @document.at('#http-body .parametertable-type')
+
+        return if element.nil?
+
+        element.text.chomp
       end
 
       def description
@@ -82,6 +103,10 @@ class ApplePeeler
             end
           end
         end
+      end
+
+      def dependencies
+        response_codes.map { |rc| rc[:type] }.compact.uniq
       end
 
       private

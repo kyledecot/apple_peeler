@@ -18,8 +18,8 @@ class ApplePeeler
         @document = document
       end
 
-      def name
-        type # TODO
+      def identifier
+        Digest::MD5.new.<<(@document.css('.topic-heading').text.to_s).hexdigest
       end
 
       def self.type
@@ -27,12 +27,21 @@ class ApplePeeler
       end
 
       def type
-        # @document.css('.topic-heading').text
-        :type
+        @document.css('.topic-heading').text
       end
 
       def possible_values
-        [] # TODO
+        @document
+          .css('#possible-values .datalist-term')
+          .map(&:text)
+      end
+
+      def inspect
+        "#<ApplePeeler::Documentation::Type identifier=\"#{identifier}\">"
+      end
+
+      def dependencies
+        []
       end
 
       def to_terminal_table

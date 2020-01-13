@@ -22,7 +22,7 @@ class ApplePeeler
 
     def []=(key, value)
       @cache[key] = value
-      @persistence.persist!(filename(key), value) unless @persistence.exists?(filename(key))
+      @persistence.persist!(filename(key), value)
     end
 
     def clear!

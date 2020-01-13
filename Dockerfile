@@ -12,5 +12,3 @@ RUN apk add --update build-base libffi-dev less git && \
     gem install bundler && \
     bundle install
 
-
-
