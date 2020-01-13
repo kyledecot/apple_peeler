@@ -20,11 +20,13 @@ class ApplePeeler
       end
 
       def url
-        "#{host}#{path}"
+        @url ||= "#{host}#{path}"
       end
 
       def host
-        @document.at('.endpointurl-host').text
+        @host ||= @document
+                  .at('.endpointurl-host')
+                  .text
       end
 
       def identifier
@@ -61,13 +63,15 @@ class ApplePeeler
       end
 
       def response_codes
-        @document.search('#response-codes .parametertable-row').map do |element|
-          {
-            status_code: response_code_status_code(element),
-            status_phrase: response_code_status_reason_phrase(element),
-            type: response_code_status_type(element)
-          }
-        end
+        @response_codes ||= begin
+                              @document.search('#response-codes .parametertable-row').map do |element|
+                                {
+                                  status_code: response_code_status_code(element),
+                                  status_phrase: response_code_status_reason_phrase(element),
+                                  type: response_code_status_type(element)
+                                }
+                              end
+                            end
       end
 
       def to_terminal_table
@@ -93,7 +97,10 @@ class ApplePeeler
       private
 
       def response_types
-        response_codes.map { |rc| rc[:type] }.compact.uniq
+        @response_types ||= response_codes
+                            .map { |rc| rc[:type] }
+                            .compact
+                            .uniq
       end
 
       def response_code_status_type(element)

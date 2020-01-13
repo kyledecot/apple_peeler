@@ -25,3 +25,6 @@ Metrics/LineLength:
 
 Style/StructInheritance:
   Enabled: false
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
