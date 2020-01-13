@@ -3,7 +3,7 @@
 RSpec.describe ApplePeeler::Documentation::Object do
   let(:documentation) do
     described_class.new(
-      document: document('', '/appstoreconnectapi/userresponse')
+      document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/userresponse')
     )
   end
 

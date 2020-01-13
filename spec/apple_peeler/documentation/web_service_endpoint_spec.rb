@@ -3,50 +3,58 @@
 RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
   describe '#http_body_type' do
     context 'with a HTTP body' do
-      let(:web_service_endpoint) { described_class.new(document: document(:patch, '/v1/users/{id}')) }
+      let(:documentation) do 
+        described_class.new(
+          document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
+        )
+      end 
 
       it 'should return a string' do
-        expect(web_service_endpoint.http_body_type).to eq('UserUpdateRequest')
+        expect(documentation.http_body_type).to eq('UserUpdateRequest')
       end
     end
 
     context 'without a HTTP body' do
-      let(:web_service_endpoint) { described_class.new(document: document(:get, '/v1/users/{id}')) }
+      let(:documentation) do
+        described_class.new(
+          document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/read_user_information')
+        )
+      end 
 
       it 'should return nil' do
-        expect(web_service_endpoint.http_body_type).to be_nil
+        expect(documentation.http_body_type).to be_nil
       end
     end
   end
 
   describe '#host' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:get, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/read_user_information')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.host).to eq('https://api.appstoreconnect.apple.com')
+      expect(documentation.host).to eq('https://api.appstoreconnect.apple.com')
     end
   end
 
   describe '#path' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:get, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/read_user_information')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.path).to eq('/v1/users/{id}')
+      expect(documentation.path).to eq('/v1/users/{id}')
     end
   end
 
   describe '#response_codes' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
@@ -59,89 +67,104 @@ RSpec.describe ApplePeeler::Documentation::WebServiceEndpoint do
         { status_code: '409', status_phrase: 'Conflict', type: 'ErrorResponse' }
 
       ]
-      actual_response_codes = web_service_endpoint.response_codes
+      actual_response_codes = documentation.response_codes
 
       expect(actual_response_codes).to match_array(expected_response_codes)
     end
   end
 
-  describe '#dependencies' do
-    let(:web_service_endpoint) do
+  describe "#http_method" do 
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
+      )
+    end
+    
+    it "should return a string" do 
+      expected_http_method = "PATCH"
+      actual_http_method = documentation.http_method
+
+      expect(actual_http_method).to eq(expected_http_method)
+    end 
+  end 
+
+  describe '#dependencies' do
+    let(:documentation) do
+      described_class.new(
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return an array of strings' do
       expected_dependencies = %w[UserUpdateRequest ErrorResponse UserResponse]
-      actual_dependencies = web_service_endpoint.dependencies
+      actual_dependencies = documentation.dependencies
 
       expect(actual_dependencies).to match_array(expected_dependencies)
     end
   end
 
   describe '#url' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.url).to eq('https://api.appstoreconnect.apple.com/v1/users/{id}')
+      expect(documentation.url).to eq('https://api.appstoreconnect.apple.com/v1/users/{id}')
     end
   end
 
   describe '#description' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.description).to eq(<<~DESCRIPTION.chomp)
+      expect(documentation.description).to eq(<<~DESCRIPTION.chomp)
         Change a user's role, app visibility information, or other account details.
       DESCRIPTION
     end
   end
 
   describe '#to_terminal_table' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return a Terminal::Table' do
-      terminal_table = web_service_endpoint.to_terminal_table
+      terminal_table = documentation.to_terminal_table
 
       expect(terminal_table).to be_a(Terminal::Table)
     end
   end
 
   describe '#heading' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.heading).to eq('Modify a User Account')
+      expect(documentation.heading).to eq('Modify a User Account')
     end
   end
 
   describe '#inspect' do
-    let(:web_service_endpoint) do
+    let(:documentation) do
       described_class.new(
-        document: document(:patch, '/v1/users/{id}')
+        document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/modify_a_user_account')
       )
     end
 
     it 'should return a string' do
-      expect(web_service_endpoint.inspect).to eq(<<~INSPECT.chomp)
-        #<ApplePeeler::Documentation::WebServiceEndpoint identifier="#{web_service_endpoint.identifier}">
+      expect(documentation.inspect).to eq(<<~INSPECT.chomp)
+        #<ApplePeeler::Documentation::WebServiceEndpoint identifier="#{documentation.identifier}">
       INSPECT
     end
   end

@@ -5,11 +5,8 @@ require 'nokogiri'
 class ApplePeeler
   module Spec
     module Helpers
-      def document(http_method, path)
-        relative_path = File.join('spec', 'support', 'fixtures', http_method.to_s, path)
-        absolute_path = File.expand_path(relative_path)
-
-        Nokogiri::HTML(File.read(absolute_path))
+      def document_for(url:)
+        VCR.use_cassette(url) { Nokogiri::HTML(open(url)) }
       end
     end
   end

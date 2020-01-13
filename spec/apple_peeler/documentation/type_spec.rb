@@ -3,7 +3,7 @@
 RSpec.describe ApplePeeler::Documentation::Type do
   let(:type) do
     described_class.new(
-      document: document('', '/appstoreconnectapi/capabilitytype')
+      document: document_for(url: 'https://developer.apple.com/documentation/appstoreconnectapi/capabilitytype')
     )
   end
 

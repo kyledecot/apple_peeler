@@ -27,14 +27,6 @@ class ApplePeeler
         @document.at('.endpointurl-host').text
       end
 
-      def self.type
-        :web_service_endpoint
-      end
-
-      def name
-        "#{http_method} #{path}"
-      end
-
       def identifier
         "#{http_method} #{path}"
       end
@@ -47,16 +39,12 @@ class ApplePeeler
         @heading ||= @document.css('.topic-title .topic-heading')&.text.to_s
       end
 
-      def type
-        :web_service_endpoint
-      end
-
       def path
         @document.at('.endpointurl-path').text
       end
 
       def http_method
-        @document.at('.endpointurl-method').text.downcase.to_sym
+        @document.at('.endpointurl-method').text
       end
 
       def http_body_type
@@ -98,10 +86,14 @@ class ApplePeeler
       end
 
       def dependencies
-        ([http_body_type] + response_codes.map { |rc| rc[:type] }).compact.uniq
+        @dependencies ||= [http_body_type] + response_types
       end
 
       private
+
+      def response_types
+        response_codes.map { |rc| rc[:type] }.compact.uniq
+      end 
 
       def response_code_status_type(element)
         element.at('.parametertable-type')&.text&.chomp

@@ -3,6 +3,7 @@
 require 'tsort'
 require 'ruby-graphviz'
 require 'securerandom'
+require 'tempfile'
 
 class ApplePeeler
   class Graph
@@ -23,25 +24,25 @@ class ApplePeeler
 
     def tsort_each_child(node)
       node.dependencies.map do |_type, identifier|
-        @documentation_by_identifier.dig(identifier)
-      end.compact
+        @documentation_by_identifier[identifier]
+      end
     end
 
-    def to_png(filename)
-      g = GraphViz.new(:G, type: :digraph, rankdir: 'LR')
+    def to_png
+      g = GraphViz.new(:G, type: :digraph, rankdir: 'LR', splines: 'polyline')
 
       nodes_by_identifier = {}
       tsort.each.with_index do |documentation, _index|
         options = case documentation.class::TYPE
-                  when :object then { label: documentation.type, color: 'blue' }
-                  when :web_service_endpoint then { color: 'green', label: "#{documentation.http_method.upcase}\n#{documentation.path}" }
+                  when :object then { label: documentation.type, color: 'lightblue' }
+                  when :web_service_endpoint then { color: 'orange', label: "#{documentation.http_method.upcase}\n#{documentation.path}" }
                   when :type
-                    { label: documentation.type, color: 'yellow' }
+                    { label: documentation.type, color: 'lightgray' }
                   else
                     raise 'Unknown Type!'
                   end
 
-        nodes_by_identifier[documentation.identifier] = g.add_nodes(documentation.identifier, { shape: 'box' }.merge(options)) # TODO
+        nodes_by_identifier[documentation.identifier] = g.add_nodes(documentation.identifier, { shape: 'box', style: 'filled' }.merge(options)) # TODO
       end
 
       nodes_by_identifier.each do |from_identifier, from_node|
@@ -49,17 +50,20 @@ class ApplePeeler
           to_documentation = @documentation_by_identifier[to_identifier]
 
           if to_documentation.nil?
-            puts "Unable to map #{from_identifier} -> #{to_identifier}"
+            STDERR.puts "Unable to map #{from_identifier} -> #{to_identifier}"
             next
           end
 
           to_node = nodes_by_identifier.fetch(to_documentation.identifier)
 
-          g.add_edges(from_node, to_node, arrowhead: 'halfopen')
+          g.add_edges(from_node, to_node)
         end
       end
-
-      g.output(png: filename)
+     
+      tempfile = Tempfile.new(%w(appstoreconnectapi .png))
+      g.output(png: tempfile.path)
+      
+      tempfile.read
     end
   end
 end

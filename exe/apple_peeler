@@ -6,9 +6,9 @@ require 'apple_peeler/cli'
 
 options = {}
 OptionParser.new do |parser|
-  parser.on('--filename FILENAME') do |filename|
-    options[:filename] = filename
+  parser.on('--format FORMAT') do |format|
+    options[:format] = format
   end
 end.parse!
 
-ApplePeeler::CLI.run(options.fetch(:filename))
+ApplePeeler::CLI.run(options.fetch(:format))

@@ -93,6 +93,7 @@ GEM
       unicode-display_width (~> 1.1, >= 1.1.1)
     thor (0.20.3)
     unicode-display_width (1.6.0)
+    vcr (5.0.0)
     webmock (3.6.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -114,6 +115,7 @@ DEPENDENCIES
   ruby-graphviz
   simplecov (~> 0.16.1)
   terminal-table
+  vcr (~> 5.0.0)
   webmock (~> 3.6.0)
 
 BUNDLED WITH
