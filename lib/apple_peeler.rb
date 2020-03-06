@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'apple_peeler/api'
 require 'apple_peeler/documentation'
 require 'apple_peeler/version'
 require 'apple_peeler/cache'

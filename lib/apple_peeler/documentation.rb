@@ -5,6 +5,7 @@ require 'apple_peeler/documentation/type'
 require 'apple_peeler/documentation/web_service_endpoint'
 require 'apple_peeler/documentation/crawler'
 require 'apple_peeler/graph'
+require 'yaml'
 
 class ApplePeeler
   class Documentation
@@ -16,10 +17,6 @@ class ApplePeeler
 
     def self.register(klass)
       types << klass
-    end
-
-    def to_json(*_args)
-      {} # TODO
     end
 
     def initialize(on_documentation: nil)
