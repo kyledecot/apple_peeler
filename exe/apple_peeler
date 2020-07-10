@@ -1,14 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'optparse'
 require 'apple_peeler/cli'
 
-options = {}
-OptionParser.new do |parser|
-  parser.on('--format FORMAT') do |format|
-    options[:format] = format
-  end
-end.parse!
-
-ApplePeeler::CLI.run(options.fetch(:format))
+ApplePeeler::CLI.run

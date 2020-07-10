@@ -2,6 +2,7 @@
 
 require 'terminal-table'
 require 'colorize'
+require 'apple_peeler/open_api/component'
 
 require 'apple_peeler/documentation/object/property'
 
@@ -12,14 +13,15 @@ class ApplePeeler
 
       PRIMITIVES = %w[integer urireference string email datetime boolean].freeze
 
-      def self.parsable?(document)
-        title = document.css('.topic-title .eyebrow')&.text.to_s
-
-        title == 'Object'
+      def self.parsable?(raw_hash)
+        true # TODO
+        # title = document.css('.topic-title .eyebrow')&.text.to_s
+#
+        # title == 'Object'
       end
 
-      def initialize(document:)
-        @document = document
+      def initialize(raw_hash)
+        @raw = raw_hash
       end
 
       def identifier
@@ -56,6 +58,10 @@ class ApplePeeler
           end
         end
       end
+
+      def to_component
+        OpenAPI::Component.new(self)
+      end 
 
       def property_names
         @property_names ||= document

@@ -9,7 +9,7 @@ require 'yaml'
 
 class ApplePeeler
   class Documentation
-    attr_reader :documentation_by_type
+    attr_reader :documentation
 
     def self.types
       @types ||= []
@@ -20,18 +20,25 @@ class ApplePeeler
     end
 
     def initialize(on_documentation: nil)
-      @documentation_by_type = Hash.new { |h, k| h[k] = [] }
       @on_documentation = on_documentation
       @crawler = Crawler.new('https://developer.apple.com')
+     @documentation = [] 
+      @components = { 
+        :schemas => {}
+      }
     end
 
     def load!
-      @crawler.start('/documentation/appstoreconnectapi') do |document|
-        documentation = to_documentation(document)
+      @crawler.start('/documentation/appstoreconnectapi/perfpowermetric') do |uri, raw_hash|
+        puts "[   DONE   ] #{uri.to_s.green}"
+        documentation = to_documentation(raw_hash)
 
-        unless documentation.nil?
-          @documentation_by_type[documentation.class::TYPE] << documentation
+        if documentation
+          @documentation << documentation
           @on_documentation&.call(documentation)
+          puts "[DOCUMENTED] #{uri}".cyan
+        else 
+          puts "[   UNKNOWN   ] #{uri}".blue
         end
       end
 
@@ -44,11 +51,11 @@ class ApplePeeler
 
     private
 
-    def to_documentation(document)
+    def to_documentation(raw_hash)
       self.class.types.find do |type|
-        next unless type.parsable?(document)
+        next unless type.parsable?(raw_hash)
 
-        break type.new(document: document)
+        break type.new(raw_hash)
       end
     end
   end

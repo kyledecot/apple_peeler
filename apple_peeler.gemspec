@@ -36,4 +36,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'terminal-table'
   spec.add_development_dependency 'vcr', '~> 5.0.0'
   spec.add_development_dependency 'webmock', '~> 3.6.0'
+
+  spec.add_runtime_dependency 'activesupport'
+  spec.add_runtime_dependency 'oas_parser'
+  spec.add_runtime_dependency 'ferrum'
 end
