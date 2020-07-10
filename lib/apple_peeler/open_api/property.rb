@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'forwardable'
 
 class ApplePeeler
@@ -11,38 +13,36 @@ class ApplePeeler
 
       def initialize(documentation)
         @documentation = documentation
-      end 
+      end
 
-      def to_h 
+      def to_h
         {}.tap do |hash|
           hash['type'] = top_level_type
           hash['items'] = items if array?
 
-          unless PRIMITIVES.include?(@documentation.type)
-            hash['$ref'] = "#/components/schemas/#{@documentation.type}"
-          end 
-        end 
-      end 
+          hash['$ref'] = "#/components/schemas/#{@documentation.type}" unless PRIMITIVES.include?(@documentation.type)
+        end
+      end
 
-      private 
+      private
 
       def top_level_type
         array? ? 'array' : type
-      end 
+      end
 
-      def items 
+      def items
         {
           type: type
-        } 
-      end 
-  
-      def type 
+        }
+      end
+
+      def type
         if PRIMITIVES.include?(@documentation.type)
           @documentation.type
-        else 
-          "object"
+        else
+          'object'
         end
-      end 
+      end
     end
   end
 end

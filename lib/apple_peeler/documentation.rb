@@ -21,15 +21,14 @@ class ApplePeeler
 
     def initialize(on_documentation: nil)
       @on_documentation = on_documentation
-      @crawler = Crawler.new('https://developer.apple.com')
-     @documentation = [] 
-      @components = { 
-        :schemas => {}
+      @documentation = []
+      @components = {
+        schemas: {}
       }
     end
 
     def load!
-      @crawler.start('/documentation/appstoreconnectapi/perfpowermetric') do |uri, raw_hash|
+      Crawler.run do
         puts "[   DONE   ] #{uri.to_s.green}"
         documentation = to_documentation(raw_hash)
 
@@ -37,7 +36,7 @@ class ApplePeeler
           @documentation << documentation
           @on_documentation&.call(documentation)
           puts "[DOCUMENTED] #{uri}".cyan
-        else 
+        else
           puts "[   UNKNOWN   ] #{uri}".blue
         end
       end

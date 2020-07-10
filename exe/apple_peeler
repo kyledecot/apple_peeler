@@ -2,5 +2,7 @@
 # frozen_string_literal: true
 
 require 'apple_peeler/cli'
+require 'concurrent'
 
+Concurrent.use_stdlib_logger(Logger::DEBUG)
 ApplePeeler::CLI.run

@@ -12,7 +12,7 @@ class ApplePeeler
           document
             .css('.parametertable-row')
             .detect { |e| require 'pry'; binding.pry; true }
-        end 
+        end
 
         def initialize(element:)
           @element = element

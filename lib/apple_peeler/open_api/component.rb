@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 
 require 'apple_peeler/open_api/property'
@@ -8,36 +10,36 @@ class ApplePeeler
       def initialize(documentation)
         @documentation = documentation
         @required = []
-      end 
+      end
 
-      def to_h 
-        { 
+      def to_h
+        {
           'type' => type,
           'properties' => properties,
           'required' => required
         }
-      end 
+      end
 
-      private 
+      private
 
       attr_reader :required
-  
-      def type 
+
+      def type
         # require 'pry'
         # binding.pry
         # if PRIMITIVES.include?(@documentation.type)
-          # @documentation.type
+        # @documentation.type
         # else
-          "object"
+        'object'
         # end
-      end 
+      end
 
       def properties
         @documentation.properties.map do |property|
           required << property.name if property.required?
           [property.name, Property.new(property).to_h]
         end.to_h
-      end 
+      end
     end
   end
 end

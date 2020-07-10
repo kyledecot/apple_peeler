@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class ApplePeeler
   class OpenAPI
-    module Utils 
+    module Utils
       # @param documentation [Array<Documentation>]
       # @return Hash<String, Object>
       def self.paths(documentation)
@@ -9,7 +11,7 @@ class ApplePeeler
           api['paths'][d.path][d.http_method.downcase] = {}
           api['paths'][d.path][d.http_method.downcase]['responses'] = {}
         end
-      end 
-    end 
-  end 
-end 
+      end
+    end
+  end
+end

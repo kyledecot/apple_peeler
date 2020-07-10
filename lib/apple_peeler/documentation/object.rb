@@ -13,10 +13,10 @@ class ApplePeeler
 
       PRIMITIVES = %w[integer urireference string email datetime boolean].freeze
 
-      def self.parsable?(raw_hash)
+      def self.parsable?(_raw_hash)
         true # TODO
         # title = document.css('.topic-title .eyebrow')&.text.to_s
-#
+        #
         # title == 'Object'
       end
 
@@ -61,7 +61,7 @@ class ApplePeeler
 
       def to_component
         OpenAPI::Component.new(self)
-      end 
+      end
 
       def property_names
         @property_names ||= document
