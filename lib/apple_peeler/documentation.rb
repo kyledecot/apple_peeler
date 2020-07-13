@@ -28,7 +28,7 @@ class ApplePeeler
     end
 
     def load!
-      Crawler.run do
+      Crawler.run do |uri, raw_hash|
         puts "[   DONE   ] #{uri.to_s.green}"
         documentation = to_documentation(raw_hash)
 

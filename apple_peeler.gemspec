@@ -26,7 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'colorize'
   spec.add_development_dependency 'guard-rspec', '~> 4.7.3'
-  spec.add_development_dependency 'nokogiri'
   spec.add_development_dependency 'pry', '~> 0.12'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
@@ -38,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock', '~> 3.6.0'
 
   spec.add_runtime_dependency 'activesupport'
+  spec.add_runtime_dependency 'addressable'
   spec.add_runtime_dependency 'concurrent-ruby'
   spec.add_runtime_dependency 'vessel'
 end

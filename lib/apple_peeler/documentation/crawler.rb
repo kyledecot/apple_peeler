@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 require 'pry'
-
-require 'apple_peeler/cache'
-
 require 'concurrent/set'
 require 'vessel'
+
+require 'apple_peeler/cache'
 
 class ApplePeeler
   class Documentation
@@ -13,14 +12,26 @@ class ApplePeeler
       domain 'developer.apple.com'
       start_urls 'https://developer.apple.com/documentation/appstoreconnectapi'
 
-      private
-
-      def enqueued_uris
-        @enqueued_urls ||= Concurrent::Set.new
+      def self.enqueued_uris
+        @enqueued_uris ||= Concurrent::Set.new
       end
 
+      private_class_method :enqueued_uris
+
+      def self.parsed_uris
+        @parsed_uris ||= Concurrent::Set.new
+      end
+
+      private_class_method :parsed_uris
+
+      private
+
       def parsed_uris
-        @parsed_urls ||= Concurrent::Set.new
+        self.class.parsed_uris
+      end
+
+      def enqueued_uris
+        self.class.enqueued_uris
       end
 
       def relevant_url?(url)
@@ -62,32 +73,12 @@ class ApplePeeler
 
       def parse
         uri = URI(page.url)
-        enqueued_uris.delete(uri)
-        parsed_uris << uri
-        # @limit += 1
-        # enqueued_uris.delete(uri)
-        # visited_uris.add(uri)
-        # puts "we are in load"
-
-        # begin
-        # current_page.goto(uri)
+        self.class.enqueued_uris.delete(uri)
+        self.class.parsed_uris << uri
         wait_for_relevant(network_traffic: page.network.traffic)
-        # rescue Ferrum::StatusError, Ferrum::BrowserError
-        # puts "[  ERROR   ] #{uri.to_s.red}"
-        # return
-        # end
-        #
-        # puts "SOMEHOW WE ARE STILL HERE" if @a
-        # begin
         raw_hash = JSON.parse(json_for(page))
-        # rescue  Exception => e
-        # puts "[WE RESCUED AN EXCEPTION] #{uri}".red
-        # raise e
-        # end
-        # yield uri, raw_hash if block_given?
-        #
-        #
-        #
+
+        yield uri, raw_hash
 
         relevant_uris(raw_hash).each do |relevant_uri|
           next if enqueued_uris.include?(relevant_uri)

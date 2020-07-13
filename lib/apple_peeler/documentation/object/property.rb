@@ -6,12 +6,10 @@ class ApplePeeler
       class Property
         TYPE = :object_property
 
-        def self.for(document:, name:)
-          require 'pry'
-          binding.pry
+        def self.for(document:)
           document
             .css('.parametertable-row')
-            .detect { |e| require 'pry'; binding.pry; true }
+            .detect { |_| true } # TODO: Implement this
         end
 
         def initialize(element:)
